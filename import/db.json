@@ -73,7 +73,7 @@
     },
     {
         "text": "8e+60 is the number of Planck time intervals since the Big Bang.",
-        "number": "8e+60",
+        "number": 8e+60,
         "found": true,
         "type": "trivia"
     },
@@ -565,7 +565,7 @@
     },
     {
         "text": "7e+27 is the number of atoms in the average human body.",
-        "number": "7e+27",
+        "number": 7e+27,
         "found": true,
         "type": "trivia"
     },
@@ -973,7 +973,7 @@
     },
     {
         "text": "5e+30 is the number of bacterial cells on Earth.",
-        "number": "5e+30",
+        "number": 5e+30,
         "found": true,
         "type": "trivia"
     },

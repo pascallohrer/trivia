@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: really_safe_pw
+    ports:
+      - "27018:27017"
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongo
+    restart: "no"
+    volumes:
+      - ./import/:/import
+    entrypoint: [ "bash", "-c", "sleep 10 && mongoimport --host mongodb:27017 --db local --collection trivia --type json --file /import/db.json --jsonArray -u root -p really_safe_pw --authenticationDatabase admin"]
+  trivia:
+    image: golang
+    depends_on:
+      - mongosetup
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    entrypoint: [ "bash", "-c", "cd /app && go build -o /bin/trivia ./cmd/trivia && /bin/trivia" ]
