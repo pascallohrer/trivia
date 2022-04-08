@@ -8,3 +8,13 @@ Note: I decided to go with **docker compose** after fiddling around with a local
 
 ## The Logger
 Production logging should usually log to file in order to provide a permanent record of logging activity. The logger is instantiated once and subsequently passed around to any components that need it (dependency injection).
+
+## The database
+As per the requirements, only read access to the database is necessary, so the adapter will only implement a `Find` method, reading data based on filters. Since those are the relevant and meaningful values, `text` and `number` will be filterable, where `text` uses regex search to find the filter value anywhere in an entry's text, while `number` looks for an exact match. Both filters should allow multiple values, which will be comma-separated in the input and will be `OR`-connected in the query, so all resulting entries will need to match any one (or more) of the provided values. If both `text` and `number` filters are provided, they will be `AND`-connected, so all resulting entries will need to match both the text and the number filters.
+
+Tests must cover all possible filters, which can be achieved with the following representative cases:
+- Find a specific number
+- Find a specific text part
+- Return an empty result set in case no match is found
+- Find all results for multiple filter values
+- Find only the correct results for a text+number filter combined
