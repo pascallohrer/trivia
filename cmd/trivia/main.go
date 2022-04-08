@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/pascallohrer/trivia/pkg/logger"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	log := logger.NewFileLogger()
+	log.Print("Hello, World!")
 }
