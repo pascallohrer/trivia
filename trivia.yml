@@ -1,0 +1,61 @@
+openapi: 3.0.1
+info:
+  title: Trivia
+  description: 'This is the result of a coding challenge.'
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: trivia
+  description: Fun facts about various numbers
+paths:
+  /trivia:
+    get:
+      tags:
+      - trivia
+      summary: Get trivia about numbers
+      description: Multiple filter values can be provided with comma separated strings
+      operationId: trivia
+      parameters:
+      - name: text
+        in: query
+        description: Strings that are searched in the trivia description
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/entry'
+        404:
+          description: No trivia found
+          content: {}
+        500:
+          description: Internal server error
+          content: {}
+components:
+  schemas:
+    entry:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 1
+        number:
+          type: number
+          minimum: 1
+          maximum: 1e+150
+        found:
+          type: boolean
+        type:
+          type: string
+          default: trivia

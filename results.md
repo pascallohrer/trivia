@@ -35,5 +35,12 @@ Examples:
 
 Tests are shortened here, covering only the `random` filter. In production, they should cover all filters, similarly to the Database tests. For this purpose, the mockDB would need to be expanded to allow text search, which is currently ignored at this point. Since the functionality's entry point lies in the `router` package, this is where the tests are located, but they cover the `handlers` package implicitly.
 
+A formal API documentation is available in the file [trivia.yml](trivia.yml).
+
 ## Security
 Hardcoding passwords is obviously a terrible idea in production. Docker compose offers the `secrets` functionality, which is included here with the local file version. For demonstration purposes, the password file is committed here, this is not the way this should be done in production. The docker secrets can be set with docker directly instead of using local files, but going into detail for this part is beyond the scope of this coding challenge.
+
+## Other Notes
+- The number field is being stored as a `float64`. This is the type that is easiest to handle, especially considering conversion/string parsing among the types large enough to hold all valid values. An alternative would be the `math/big` package, specifically the `Int` type.
+- Testing should be a part of the deployment process, so the actual pipeline should include something that runs the package tests. Integration tests are also a good idea, they would look similar to the `router` tests, but use the actual database implementation instead of a mock.
+- Spinning up the containers (`docker compose up -d`) without shutting them down first will actually reuse the database and duplicate all entries. There is intentionally no duplicate protection, so this will break the "correct total number of documents" test and cause every result to come back twice (or more often if the containers are spun up repeatedly). Don't do this, shut the containers down before starting them again.
