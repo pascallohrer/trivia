@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -18,8 +19,15 @@ type mongoDB struct {
 
 func NewMongoDB(logger LoggerInterface) *mongoDB {
 	for retries := 10; retries > 0; retries-- {
+		password, _ := os.ReadFile(os.Getenv("MONGO_PASSWORD_FILE"))
+		logger.Print(os.Getenv("MONGO_PASSWORD_FILE"))
 		client, err := mongo.Connect(context.Background(), options.Client().
-			ApplyURI("mongodb://root:really_safe_pw@localhost:27017"))
+			ApplyURI("mongodb://mongodb:27017").
+			SetAuth(options.Credential{
+				AuthMechanism: "SCRAM-SHA-256",
+				Username:      "root",
+				Password:      string(password),
+			}))
 		if err != nil {
 			time.Sleep(time.Second)
 			continue

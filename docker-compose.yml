@@ -4,7 +4,9 @@ services:
     image: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: really_safe_pw
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo_password
+    secrets:
+      - mongo_password
     ports:
       - "27017:27017"
   mongosetup:
@@ -14,9 +16,13 @@ services:
     restart: "no"
     volumes:
       - ./import/:/import
-    entrypoint: [ "bash", "-c", "sleep 10 && mongoimport --host mongodb:27017 --db local --collection trivia --type json --file /import/db.json --jsonArray -u root -p really_safe_pw --authenticationDatabase admin"]
+    entrypoint: [ "bash", "-c", "sleep 10 && mongoimport --host mongodb:27017 --db local --collection trivia --type json --file /import/db.json --jsonArray -u root -p `cat /var/run/secrets/mongo_password` --authenticationDatabase admin"]
+    secrets:
+      - mongo_password
   trivia:
     image: golang
+    environment:
+      - MONGO_PASSWORD_FILE=/run/secrets/mongo_password
     depends_on:
       - mongosetup
     ports:
@@ -24,3 +30,8 @@ services:
     volumes:
       - .:/app
     entrypoint: [ "bash", "-c", "cd /app && go build -o /bin/trivia ./cmd/trivia && /bin/trivia" ]
+    secrets:
+      - mongo_password
+secrets:
+  mongo_password:
+    file: ./secrets/mongo_password

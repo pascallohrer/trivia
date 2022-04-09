@@ -11,6 +11,6 @@ func main() {
 	datastore := db.NewMongoDB(log)
 	app := router.NewRouter(log, datastore)
 	if err := app.Listen(":8080"); err != nil {
-		log.Print(err)
+		log.Printf("App crashed: %v", err)
 	}
 }

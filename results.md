@@ -34,3 +34,6 @@ Examples:
   - This will default to the value 1 and return one random entry from the entire dataset
 
 Tests are shortened here, covering only the `random` filter. In production, they should cover all filters, similarly to the Database tests. For this purpose, the mockDB would need to be expanded to allow text search, which is currently ignored at this point. Since the functionality's entry point lies in the `router` package, this is where the tests are located, but they cover the `handlers` package implicitly.
+
+## Security
+Hardcoding passwords is obviously a terrible idea in production. Docker compose offers the `secrets` functionality, which is included here with the local file version. For demonstration purposes, the password file is committed here, this is not the way this should be done in production. The docker secrets can be set with docker directly instead of using local files, but going into detail for this part is beyond the scope of this coding challenge.

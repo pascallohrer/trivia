@@ -1,6 +1,7 @@
 package db
 
 type LoggerInterface interface {
+	Print(...interface{})
 	Fatal(...interface{})
 }
 
