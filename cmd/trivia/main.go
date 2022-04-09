@@ -10,6 +10,7 @@ func main() {
 	log := logger.NewFileLogger()
 	datastore := db.NewMongoDB(log)
 	app := router.NewRouter(log, datastore)
-	app.Listen(":8080")
-	log.Print("Hello, World!")
+	if err := app.Listen(":8080"); err != nil {
+		log.Print(err)
+	}
 }

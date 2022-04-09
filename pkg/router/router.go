@@ -2,16 +2,13 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/pascallohrer/trivia/pkg/db"
+	"github.com/pascallohrer/trivia/pkg/handlers"
 )
 
-type LoggerInterface interface {
-}
-
-type DBInterface interface {
-	Find(map[string]string) ([]db.Entry, error)
-}
-
-func NewRouter(logger LoggerInterface, db DBInterface) *fiber.App {
-	return fiber.New()
+func NewRouter(logger handlers.Logger, db handlers.DB) *fiber.App {
+	app := fiber.New(fiber.Config{
+		GETOnly: true,
+	})
+	app.Get("/api/v1/trivia", handlers.NewGetTriviaHandler(logger, db))
+	return app
 }

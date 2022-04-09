@@ -18,3 +18,19 @@ Tests must cover all possible filters, which can be achieved with the following 
 - Return an empty result set in case no match is found
 - Find all results for multiple filter values
 - Find only the correct results for a text+number filter combined
+
+## The API
+The API offers a single endpoint `/api/v1/trivia` which only supports `GET`. The following query parameters are supported:
+- `text`: Filters the trivia bits for any that contain either of the comma-separated values provided in the parameter.
+- `number`: Filters the trivia bits for any that exactly match any of the comma-separated values provided in the parameter.
+- `random`: Returns a random selection from the actual results. This parameter is interpreted as an integer, defaulting to 1 for invalid values (including values less than 1). This value is the number of results returned, where each result is randomly picked from the full set of actual results based on the other filters. Duplicates are allowed and the returned array will always contain exactly the number of records passed as value to this parameter (unless there are no records to pick from).
+
+The returned value is a JSON-encoded array sent with the HTTP status `OK`. If no records are found, the response will instead have HTTP status `Not Found`. In case any errors occur during database access, the error and request data will be logged and the response will have HTTP status `Internal Server Error`.
+
+Examples:
+- `api/v1/trivia?number=3,6,4e93&text=number`
+  - This will return all entries for the numbers 3, 6 and 4e93 that contain the word "number" in their text.
+- `api/v1/trivia?random=hell_yeah`
+  - This will default to the value 1 and return one random entry from the entire dataset
+
+Tests are shortened here, covering only the `random` filter. In production, they should cover all filters, similarly to the Database tests. For this purpose, the mockDB would need to be expanded to allow text search, which is currently ignored at this point. Since the functionality's entry point lies in the `router` package, this is where the tests are located, but they cover the `handlers` package implicitly.
